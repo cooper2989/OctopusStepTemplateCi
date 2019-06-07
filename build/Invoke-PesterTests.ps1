@@ -15,28 +15,29 @@ Set-StrictMode -Version "Latest";
 $thisScript   = $MyInvocation.MyCommand.Path;
 $thisFolder   = [System.IO.Path]::GetDirectoryName($thisScript);
 $rootFolder   = [System.IO.Path]::GetDirectoryName($thisFolder);
-$packagesRoot = [System.IO.Path]::Combine($rootFolder, "packages");
+#$packagesRoot = [System.IO.Path]::Combine($rootFolder, "packages");
+
+# . ([System.IO.Path]::Combine($thisFolder, "scripts\Invoke-NuGetInstall.ps1"));
 
 
-. ([System.IO.Path]::Combine($thisFolder, "scripts\Invoke-NuGetInstall.ps1"));
+# Invoke-NuGetInstall -NuGet           $NuGet `
+#                     -Source          "https://www.powershellgallery.com/api/v2" `
+#                     -PackageId       "PSScriptAnalyzer" `
+#                     -Version         "1.17.1" `
+#                     -OutputDirectory $packagesRoot;
+
+# Invoke-NuGetInstall -NuGet           $NuGet `
+#                     -Source          "https://www.powershellgallery.com/api/v2" `
+#                     -PackageId       "Pester" `
+#                     -Version         "4.3.1" `
+#                     -OutputDirectory $packagesRoot;
 
 
-Invoke-NuGetInstall -NuGet           $NuGet `
-                    -Source          "https://www.powershellgallery.com/api/v2" `
-                    -PackageId       "PSScriptAnalyzer" `
-                    -Version         "1.17.1" `
-                    -OutputDirectory $packagesRoot;
+# Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer.1.17.1\PSScriptAnalyzer.psd1")) -ErrorAction "Stop";
+# Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester.4.3.1\Pester.psd1")) -ErrorAction "Stop";
 
-Invoke-NuGetInstall -NuGet           $NuGet `
-                    -Source          "https://www.powershellgallery.com/api/v2" `
-                    -PackageId       "Pester" `
-                    -Version         "4.3.1" `
-                    -OutputDirectory $packagesRoot;
-
-
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer.1.17.1\PSScriptAnalyzer.psd1")) -ErrorAction "Stop";
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester.4.3.1\Pester.psd1")) -ErrorAction "Stop";
-
+Install-Module Pester
+Install-Module PSScriptAnalyzer
 
 $testPath      = [System.IO.Path]::Combine($rootFolder, "OctopusStepTemplateCi\Cmdlets");
 $coverageFiles = (Get-ChildItem -Path "$testPath\*.ps1" -Recurse -Exclude *.Tests.* ).FullName;
